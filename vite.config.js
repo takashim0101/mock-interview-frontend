@@ -6,9 +6,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/chat': { // Changed from /interview to /chat
-        target: 'http://localhost:3001',
+      '/chat': {
+        target: 'http://localhost:3001', // Your backend server address
         changeOrigin: true,
+        // rewrite: (path) => path.replace(/^\/api/, ''), // If your backend had an /api prefix
       },
     },
   },
