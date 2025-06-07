@@ -1,107 +1,204 @@
 /* frontend/src/App.css */
-#root {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* These styles complement the Tailwind CSS classes used in App.jsx.
+   They are for specific elements or custom layouts not easily achieved
+   with Tailwind utilities alone. */
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f0f2f5; /* Light grey background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px; /* Add some padding for smaller screens */
+    box-sizing: border-box; /* Include padding in element's total width and height */
 }
 
-.App {
-  font-family: sans-serif;
-  display: flex;
-  flex-direction: column;
-  height: 90vh; /* Adjust as needed */
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9;
+.chat-container {
+    background-color: #ffffff; /* White background for the chat box */
+    border-radius: 12px; /* Rounded corners for the container */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    width: 100%;
+    max-width: 768px; /* Max width for larger screens */
+    height: 85vh; /* Responsive height */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
-h1 {
-  background-color: #007bff;
-  color: white;
-  padding: 15px;
-  margin: 0;
-  font-size: 1.5em;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
+.chat-header {
+    background: linear-gradient(to right, #6366f1, #8b5cf6); /* Gradient background */
+    color: #ffffff;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    font-size: 1.5rem; /* Larger font for header */
+    font-weight: 700; /* Bold font */
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    display: flex; /* Use flex for header content alignment */
+    justify-content: space-between; /* Space out title and button */
+    align-items: center; /* Vertically center items */
 }
 
-.conversation-area {
-  flex-grow: 1;
-  padding: 20px;
-  overflow-y: auto;
-  background-color: #fff;
-  text-align: left;
-  line-height: 1.6;
+.chat-header-title {
+    flex-grow: 1; /* Allow title to take available space */
+}
+
+.pdf-button {
+    background-color: #10b981; /* Green for download button */
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px; /* Slightly rounded corners */
+    font-size: 0.8rem; /* Smaller font for button in header */
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease-in-out;
+    box-shadow: 0 2px 5px rgba(16, 185, 129, 0.3);
+}
+
+.pdf-button:hover {
+    background-color: #059669; /* Darker green on hover */
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    background-color: #fdfdfd; /* Slightly off-white for message area */
+    scroll-behavior: smooth; /* Smooth scrolling for new messages */
+    display: flex; /* Use flexbox for message alignment */
+    flex-direction: column;
 }
 
 .message {
-  margin-bottom: 15px;
-  padding: 10px 15px;
-  border-radius: 15px;
-  max-width: 80%;
-  word-wrap: break-word;
-}
-
-.message strong {
-    font-weight: bold;
-    margin-right: 5px;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 20px; /* More rounded bubbles */
+    max-width: 85%; /* Limit message width */
+    word-wrap: break-word; /* Ensure long words wrap */
+    line-height: 1.5;
+    font-size: 0.95rem;
 }
 
 .message.user {
-  background-color: #e0f7fa; /* Light blue for user messages */
-  align-self: flex-end; /* Pushes user messages to the right */
-  margin-left: auto; /* Ensures it stays to the right */
+    background-color: #dcf8c6; /* Light green for user messages */
+    align-self: flex-end; /* Align user messages to the right */
+    margin-left: auto; /* Push user messages to the right */
+    border-bottom-right-radius: 5px; /* Slightly less rounded on the bottom right for user */
 }
 
-.message.model {
-  background-color: #f1f8e9; /* Light green for AI messages */
-  align-self: flex-start; /* Pushes AI messages to the left */
-  margin-right: auto; /* Ensures it stays to the left */
+.message.ai {
+    background-color: #e3f2fd; /* Light blue for AI messages */
+    align-self: flex-start; /* Align AI messages to the left */
+    margin-right: auto; /* Push AI messages to the left */
+    border-bottom-left-radius: 5px; /* Slightly less rounded on the bottom left for AI */
 }
 
-.response-section {
-  display: flex;
-  padding: 15px;
-  border-top: 1px solid #eee;
-  background-color: #f1f1f1;
+.message strong {
+    font-weight: 600; /* Semi-bold for sender name */
+    margin-right: 5px;
 }
 
-textarea {
-  flex-grow: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  resize: vertical;
-  min-height: 60px; /* Adjust as needed */
+.chat-input {
+    display: flex;
+    padding: 1.5rem;
+    background-color: #f0f2f5; /* Match body background */
+    border-top: 1px solid #e0e0e0;
+    gap: 10px; /* Space between input and button */
 }
 
-button {
-  padding: 10px 20px;
-  margin-left: 10px;
-  background-color: #28a745; /* Green submit button */
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1em;
-  transition: background-color 0.3s ease;
+.chat-input input {
+    flex-grow: 1;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid #cbd5e1; /* Lighter border */
+    border-radius: 25px; /* Fully rounded input field */
+    font-size: 1rem;
+    outline: none; /* Remove outline on focus */
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-button:hover:not(:disabled) {
-  background-color: #218838;
+.chat-input input:focus {
+    border-color: #6366f1; /* Highlight border on focus */
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* Soft shadow on focus */
 }
 
-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
+.chat-input button {
+    background-color: #6366f1; /* Purple button */
+    color: #ffffff;
+    border: none;
+    border-radius: 25px; /* Fully rounded button */
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    box-shadow: 0 2px 5px rgba(99, 102, 241, 0.3); /* Button shadow */
+}
+
+.chat-input button:hover:not(:disabled) {
+    background-color: #4f46e5; /* Darker purple on hover */
+    transform: translateY(-1px); /* Slight lift effect */
+}
+
+.chat-input button:active:not(:disabled) {
+    transform: translateY(0); /* Press down effect */
+}
+
+.chat-input button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
 }
 
 .loading-indicator {
-  padding: 10px;
-  text-align: center;
-  color: #666;
-  font-style: italic;
+    padding: 10px;
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 640px) {
+    body {
+        padding: 10px;
+    }
+    .chat-container {
+        height: 95vh; /* Maximize height on small screens */
+        border-radius: 0; /* No border-radius on full screen for mobile feel */
+    }
+    .chat-header {
+        font-size: 1.25rem;
+        flex-direction: column; /* Stack header items vertically */
+        gap: 10px;
+    }
+    .chat-header-title {
+        flex-grow: 0; /* No flex grow for title when stacked */
+    }
+    .pdf-button {
+        width: 100%; /* Full width button in stacked header */
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+    .chat-messages {
+        padding: 1rem;
+    }
+    .message {
+        max-width: 95%; /* Allow messages to take more width */
+    }
+    .chat-input {
+        flex-direction: column; /* Stack input and button vertically */
+        padding: 1rem;
+    }
+    .chat-input input {
+        margin-right: 0;
+        margin-bottom: 10px; /* Space between stacked input and button */
+        border-radius: 8px; /* Slightly less rounded for stacked elements */
+    }
+    .chat-input button {
+        width: 100%; /* Full width button */
+        border-radius: 8px; /* Slightly less rounded for stacked elements */
+    }
 }
