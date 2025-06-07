@@ -1,90 +1,85 @@
-// src/App.jsx
+// frontend/src/App.jsx
 import React, { useState, useEffect } from 'react';
-import './App.css'; // Add styles as needed
+import './App.css';
 
 function App() {
-  // State management using useState hooks
   const [sessionId, setSessionId] = useState('');
-  const [jobTitle, setJobTitle] = useState('');
-  // 'conversation' will be an array of objects: { role: 'user' | 'model', text: string }
   const [conversation, setConversation] = useState([]);
   const [userResponse, setUserResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [chatStarted, setChatStarted] = useState(false); // New state to manage initial chat start
 
   // Generate session ID on initial component load
   useEffect(() => {
     if (!sessionId) {
       setSessionId(Date.now().toString());
     }
-  }, [sessionId]); // Only re-run if sessionId changes (effectively once on initial load)
+  }, [sessionId]);
 
-  // Handler for when the "Start Interview" button is clicked
-  const startInterview = async () => {
-    if (!jobTitle) {
-      alert('Please enter a job title.');
-      return;
+  // Start the chat automatically once sessionId is available
+  useEffect(() => {
+    if (sessionId && !chatStarted) {
+      startChat();
     }
+  }, [sessionId, chatStarted]); // Re-run if sessionId or chatStarted changes
+
+  const startChat = async () => {
+    setIsLoading(true);
     setConversation([]); // Reset conversation history
     setUserResponse(''); // Clear user's previous input
-    setIsLoading(true); // Start loading state
 
     try {
-      // Request to the backend API
-      const response = await fetch('/interview', {
+      // Send an empty userResponse to trigger Tina's initial prompt from the backend
+      const response = await fetch('/chat', { // Changed endpoint to /chat
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        // Send jobTitle and an empty userResponse to trigger the first question from the AI
-        body: JSON.stringify({ sessionId, jobTitle, userResponse: '' }),
+        body: JSON.stringify({ sessionId, userResponse: '' }), // Send empty string to trigger initial prompt
       });
 
-      const data = await response.json(); // Parse the JSON response
+      const data = await response.json();
       if (response.ok) {
-        // Update the conversation state with the history received from the backend
         setConversation(data.history.map(item => ({
           role: item.role,
-          text: item.text // This should now correctly receive text from backend
+          text: item.text
         })));
+        setChatStarted(true); // Mark chat as started
       } else {
         alert(`Error: ${data.error}`);
       }
     } catch (error) {
-      console.error('Interview start error:', error);
-      alert('An error occurred while starting the interview.');
+      console.error('Chat start error:', error);
+      alert('An error occurred while starting the insurance consultation.');
     } finally {
-      setIsLoading(false); // End loading state
+      setIsLoading(false);
     }
   };
 
-  // Handler for when the "Submit Response" button is clicked
   const handleSubmitResponse = async () => {
-    if (!userResponse.trim()) { // Check if the response is not empty
+    if (!userResponse.trim()) {
       alert('Please enter your response.');
       return;
     }
-    setIsLoading(true); // Start loading state
+    setIsLoading(true);
 
     // Immediately add the user's response to the UI conversation history
     setConversation(prevConv => [...prevConv, { role: 'user', text: userResponse }]);
 
     try {
-      // Request to the backend API
-      const response = await fetch('/interview', {
+      const response = await fetch('/chat', { // Changed endpoint to /chat
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        // Send current sessionId, jobTitle, and user's response
-        body: JSON.stringify({ sessionId, jobTitle, userResponse }),
+        body: JSON.stringify({ sessionId, userResponse }),
       });
 
-      const data = await response.json(); // Parse the JSON response
+      const data = await response.json();
       if (response.ok) {
-        // Update the UI with the latest conversation history from the backend
         setConversation(data.history.map(item => ({
           role: item.role,
-          text: item.text // This should now correctly receive text from backend
+          text: item.text
         })));
         setUserResponse(''); // Clear the response input field
       } else {
@@ -94,44 +89,25 @@ function App() {
       console.error('Response submission error:', error);
       alert('An error occurred while submitting your response.');
     } finally {
-      setIsLoading(false); // End loading state
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="App">
-      <h1>Mock Interview Application</h1>
-
-      {/* Job Title Input Section */}
-      <div className="job-title-section">
-        <label htmlFor="jobTitle">Job Title for Interview:</label>
-        <input
-          type="text"
-          id="jobTitle"
-          value={jobTitle}
-          onChange={(e) => setJobTitle(e.target.value)}
-          placeholder="e.g., Software Engineer"
-          disabled={isLoading} // Disable input during loading
-        />
-        <button onClick={startInterview} disabled={isLoading}>
-          Start Interview
-        </button>
-      </div>
+      <h1>Tina – Your AI Insurance Policy Assistant</h1>
 
       {/* Conversation Display Area */}
       <div className="conversation-area">
-        {/* Display instructions if conversation hasn't started and not loading */}
         {conversation.length === 0 && !isLoading && (
-          <p>Please enter a job title and click "Start Interview".</p>
+          <p>Starting your insurance consultation with Tina...</p>
         )}
-        {/* Map through conversation history to display messages */}
         {conversation.map((msg, index) => (
           <div key={index} className={`message ${msg.role}`}>
-            <strong>{msg.role === 'user' ? 'You:' : 'AI Interviewer:'}</strong> {msg.text}
+            <strong>{msg.role === 'user' ? 'Me:' : 'Tina:'}</strong> {msg.text}
           </div>
         ))}
-        {/* Loading indicator */}
-        {isLoading && <div className="loading-indicator">AI Interviewer is thinking...</div>}
+        {isLoading && <div className="loading-indicator">Tina is thinking...</div>}
       </div>
 
       {/* Response Input Section */}
@@ -139,16 +115,15 @@ function App() {
         <textarea
           value={userResponse}
           onChange={(e) => setUserResponse(e.target.value)}
-          placeholder="Enter your response here..."
+          placeholder="Type your response here..."
           rows="4"
-          // Disable textarea and button if loading, job title is empty, or conversation hasn't started
-          disabled={isLoading || !jobTitle || conversation.length === 0}
+          disabled={isLoading || !chatStarted} // Disable if loading or chat hasn't started
         ></textarea>
         <button
           onClick={handleSubmitResponse}
-          disabled={isLoading || !jobTitle || conversation.length === 0}
+          disabled={isLoading || !chatStarted} // Disable if loading or chat hasn't started
         >
-          Submit Response
+          Submit
         </button>
       </div>
     </div>
